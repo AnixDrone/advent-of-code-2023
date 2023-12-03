@@ -1,17 +1,27 @@
-fn main() {
-    //let text = include_str!("../input.txt");
-    //let words = text.split("\n").collect::<Vec<&str>>();
+use std::fs;
 
-    //print!("{:?}", words);
-    let result = extract_numbers_from_word("");
-    let number = match result.parse() {
-        Ok(n) => n,
-        Err(_) => 0,
+fn main() {
+    let content = match fs::read_to_string("src/input.txt") {
+        Ok(content) => content,
+        Err(_) => panic!("Failed to read file"),
     };
-    println!("{}", number);
+
+    let words = content.split("\n").collect::<Vec<&str>>();
+    print!("Part 1 {:?}", &words);
+    let numbers = words
+        .iter()
+        .map(|word| extract_numbers_from_word(word))
+        .collect::<Vec<i32>>();
+    print!("Words: {:?}", numbers);
 }
 
-fn extract_numbers_from_word(word: &str) -> String {
+fn extract_numbers_from_word(word: &str) -> i32 {
     let numbers = word.chars().filter(|c| c.is_numeric()).collect::<String>();
-    numbers
+    match numbers.parse() {
+        Ok(n) => (numbers.chars().next().unwrap().to_string()
+            + numbers.chars().last().unwrap().to_string())
+        .parse()
+        .unwrap(),
+        Err(_) => 0,
+    }
 }
