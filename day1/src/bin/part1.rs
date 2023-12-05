@@ -7,21 +7,23 @@ fn main() {
     };
 
     let words = content.split("\n").collect::<Vec<&str>>();
-    print!("Part 1 {:?}", &words);
     let numbers = words
         .iter()
         .map(|word| extract_numbers_from_word(word))
+        .map(|number| number.parse::<i32>().unwrap())
         .collect::<Vec<i32>>();
-    print!("Words: {:?}", numbers);
+    print!("Sum of numbers: {:?}", numbers.iter().sum::<i32>());
 }
 
-fn extract_numbers_from_word(word: &str) -> i32 {
-    let numbers = word.chars().filter(|c| c.is_numeric()).collect::<String>();
-    match numbers.parse() {
-        Ok(n) => (numbers.chars().next().unwrap().to_string()
-            + numbers.chars().last().unwrap().to_string())
-        .parse()
-        .unwrap(),
-        Err(_) => 0,
-    }
+fn extract_numbers_from_word(word: &str) -> String {
+    let n = word.chars().filter(|c| c.is_numeric()).collect::<String>();
+    let first_character = match n.chars().next() {
+        Some(inner) => inner.to_string(),
+        None => String::from("0"),
+    };
+    let second_character = match n.chars().last() {
+        Some(inner) => inner.to_string(),
+        None => String::from("0"),
+    };
+    return first_character + &second_character;
 }
