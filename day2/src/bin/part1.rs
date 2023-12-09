@@ -3,21 +3,21 @@ use std::fs;
 
 #[derive(Debug)]
 struct Round {
-    blue: u8,
-    red: u8,
-    green: u8,
+    blue: u32,
+    red: u32,
+    green: u32,
 }
 
 impl Round {
-    fn new(blue: u8, red: u8, green: u8) -> Round {
+    fn new(blue: u32, red: u32, green: u32) -> Round {
         Round { blue, red, green }
     }
 
     fn create_round(round: &str) -> Round {
         let colors = round.split(",").collect::<Vec<&str>>();
-        let mut blue = 0;
-        let mut red = 0;
-        let mut green = 0;
+        let mut blue = 0u32;
+        let mut red = 0u32;
+        let mut green = 0u32;
         for color in colors {
             if color == "" {
                 continue;
@@ -26,9 +26,9 @@ impl Round {
             let color_name = color[2];
             let color_value = color[1];
             match color_name {
-                "blue" => blue = color_value.parse::<u8>().unwrap(),
-                "red" => red = color_value.parse::<u8>().unwrap(),
-                "green" => green = color_value.parse::<u8>().unwrap(),
+                "blue" => blue = color_value.parse::<u32>().unwrap(),
+                "red" => red = color_value.parse::<u32>().unwrap(),
+                "green" => green = color_value.parse::<u32>().unwrap(),
                 _ => println!("Unknown color"),
             }
         }
@@ -107,9 +107,17 @@ fn main() {
     for game in &valid_games {
         println!("Game: {:?}", game.id);
     }
-    print!(
+    println!(
         "Sum of valid game ids: {}",
         valid_games.iter().fold(0u32, |acc, game| acc + game.id)
+    );
+    println!(
+        "Min ball sum: {:?}",
+        games
+            .iter()
+            .map(|game| game.min_ball_sum())
+            .map(|round| round.blue * round.red * round.green)
+            .fold(0u32, |acc, sum| acc + sum)
     );
 }
 
